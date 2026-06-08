@@ -1,12 +1,14 @@
-export default function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ success: false, error: "Only GET allowed" });
-  }
+import { Redis } from "@upstash/redis";
 
-  // generate key random
+const redis = Redis.fromEnv();
+
+export default async function handler(req, res) {
   const key = "PORS-" + Math.random().toString(36).substring(2, 10).toUpperCase();
 
-  return res.status(200).json({
+  // simpan key ke database
+  await redis.set(key, "valid");
+
+  return res.json({
     success: true,
     key: key
   });
